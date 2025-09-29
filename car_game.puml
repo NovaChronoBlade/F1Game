@@ -1,0 +1,49 @@
+@startuml Chulo
+
+interface Pociones {
+    +nombre: String
+    +descripcion: String
+    +duracion: int
+    +operar(carro: Carro): void
+}
+
+class Rapidez implements Pociones {
+    +nombre: String
+    +descripcion: String
+    +duracion: int
+    +operar(carro: Carro): void
+}
+
+class Lentitud implements Pociones {
+    +nombre: String
+    +descripcion: String
+    +duracion: int
+    +operar(carro: Carro): void
+}
+
+class Inmunidad implements Pociones {
+    +nombre: String
+    +descripcion: String
+    +duracion: int
+    +operar(carro: Carro): void
+}
+
+class Carro {
+    +posicion: int
+    +velocidad: int
+    +correr(): void
+}
+
+class CarroConDecorador {
+    +carro: Carro
+    +operar(): void
+}
+
+
+
+Carro "1" *-- "1" CarroConDecorador : Composición
+CarroConDecorador <|-- Rapidez
+CarroConDecorador <|-- Lentitud
+CarroConDecorador <|-- Inmunidad
+
+@enduml
