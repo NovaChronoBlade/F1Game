@@ -73,8 +73,6 @@ class Menu:
             self.pantalla.blit(self.boton_salir, self.boton_salir_rect)
 
             # Dibujar hitboxes (debug)
-            if self.show_hitbox:
-                pygame.draw.rect(self.pantalla, (255, 0, 0), self.boton_jugar_rect, 2)
-                pygame.draw.rect(self.pantalla, (255, 0, 0), self.boton_salir_rect, 2)
+
 
             pygame.display.flip()

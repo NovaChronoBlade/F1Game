@@ -9,7 +9,7 @@ pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption(TITULO)
 
 # Mostrar el menú (activar show_hitbox=True para depuración de hitboxes)
-menu = Menu(pantalla, show_hitbox=False)
+menu = Menu(pantalla, show_hitbox=True)
 accion = menu.mostrar()
 
 # Si el usuario hace clic en "Jugar", inicia el juego

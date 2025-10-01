@@ -6,4 +6,4 @@ ICON = "/assets/images/icon.png"
 COLOR_FONDO = (0, 0, 0)
 # Tamaño de los botones (proporción del ancho/alto de la ventana)
 BOTON_ANCHO = 300
-BOTON_ALTO = 170
+BOTON_ALTO = 200
