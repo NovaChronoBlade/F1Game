@@ -9,9 +9,9 @@ class Menu:
         self.fondo = pygame.image.load("assets/images/bg_principal.png")
         self.fondo = pygame.transform.scale(self.fondo, (ANCHO, ALTO))
 
-        # Botones
-        self.boton_jugar = pygame.image.load("assets/images/jugar_boton.png").convert_alpha()
-        self.boton_salir = pygame.image.load("assets/images/salir_boton.png").convert_alpha()
+        # Botones (sin convert_alpha para evitar errores de inicialización)
+        self.boton_jugar = pygame.image.load("assets/images/jugar_boton.png")
+        self.boton_salir = pygame.image.load("assets/images/salir_boton.png")
 
         # Escalar botones al tamaño definido en config
         self.boton_jugar = pygame.transform.scale(self.boton_jugar, (BOTON_ANCHO, BOTON_ALTO))

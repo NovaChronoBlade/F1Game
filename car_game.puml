@@ -1,49 +1,169 @@
-@startuml Chulo
+@startuml F1Game_Architecture
 
-interface Pociones {
-    +nombre: String
-    +descripcion: String
-    +duracion: int
-    +operar(carro: Carro): void
+' ========== PATRÓN DECORATOR/WRAPPER ==========
+
+' Componente abstracto base
+abstract class CarroComponent {
+    {abstract} +mover_izquierda(limite_izquierdo: int): void
+    {abstract} +mover_derecha(limite_derecho: int): void
+    {abstract} +draw(screen): void
+    {abstract} +get_velocidad(): int
+    {abstract} +es_inmune(): bool
+    {abstract} +get_rect(): Rect
 }
 
-class Rapidez implements Pociones {
-    +nombre: String
-    +descripcion: String
-    +duracion: int
-    +operar(carro: Carro): void
+' Decorador base
+abstract class CarroDecorator extends CarroComponent {
+    #_carro: CarroComponent
+    +CarroDecorator(carro: CarroComponent)
+    +mover_izquierda(limite_izquierdo: int): void
+    +mover_derecha(limite_derecho: int): void
+    +draw(screen): void
+    +get_velocidad(): int
+    +es_inmune(): bool
+    +get_rect(): Rect
 }
 
-class Lentitud implements Pociones {
-    +nombre: String
-    +descripcion: String
-    +duracion: int
-    +operar(carro: Carro): void
+' Decoradores concretos
+class VelocidadDecorator extends CarroDecorator {
+    -boost_velocidad: int
+    -tiempo_inicio: int
+    -duracion: int
+    +VelocidadDecorator(carro: CarroComponent, boost: int)
+    +get_velocidad(): int
+    +draw(screen): void
+    +ha_expirado(): bool
 }
 
-class Inmunidad implements Pociones {
-    +nombre: String
-    +descripcion: String
-    +duracion: int
-    +operar(carro: Carro): void
+class LentitudDecorator extends CarroDecorator {
+    -reduccion_velocidad: int
+    -tiempo_inicio: int
+    -duracion: int
+    +LentitudDecorator(carro: CarroComponent, reduccion: int)
+    +get_velocidad(): int
+    +draw(screen): void
+    +ha_expirado(): bool
 }
 
-class Carro {
-    +posicion: int
+class InmunidadDecorator extends CarroDecorator {
+    -tiempo_inicio: int
+    -duracion: int
+    +InmunidadDecorator(carro: CarroComponent)
+    +es_inmune(): bool
+    +draw(screen): void
+    +ha_expirado(): bool
+}
+
+' ========== MODELO DE CARRO ==========
+
+abstract class Carro {
     +velocidad: int
+    +inmunidad: bool
+    +Carro(velocidad: int, inmunidad: bool)
+    {abstract} +correr(): void
+}
+
+class CarroJugador extends CarroComponent {
+    -image: Surface
+    -rect: Rect
+    -x: int
+    -y: int
+    +CarroJugador(x: int, y: int, imagen_path: str, velocidad_base: int)
     +correr(): void
+    +mover_izquierda(limite_izquierdo: int): void
+    +mover_derecha(limite_derecho: int): void
+    +draw(screen): void
+    +get_velocidad(): int
+    +es_inmune(): bool
+    +get_rect(): Rect
 }
 
-class CarroConDecorador {
-    +carro: Carro
-    +operar(): void
+' ========== POCIONES ==========
+
+abstract class PocionesInterface {
+    +nombre: str
+    +descripcion: str
+    +duracion: int
+    +tiempo_inicio: int
+    +PocionesInterface(nombre: str, descripcion: str, duracion: int)
+    {abstract} +operar(carro: Carro): void
+    +ha_expirado(): bool
 }
 
+class PocionItem {
+    +tipo: str
+    +image: Surface
+    +rect: Rect
+    +velocidad: int
+    {static} +TIPOS_POCIONES: dict
+    +PocionItem(x: int, y: int, tipo: str, velocidad: int)
+    +update(): void
+    +draw(screen): void
+    +esta_fuera_pantalla(alto: int): bool
+    {static} +crear_aleatoria(x: int, y: int, velocidad: int): PocionItem
+}
 
+' ========== CONTROLADOR ==========
 
-Carro "1" *-- "1" CarroConDecorador : Composición
-CarroConDecorador <|-- Rapidez
-CarroConDecorador <|-- Lentitud
-CarroConDecorador <|-- Inmunidad
+class GestorPociones {
+    -decoradores_activos: list
+    -carro_base: CarroComponent
+    +GestorPociones()
+    +aplicar_pocion(carro: CarroComponent, tipo: str): CarroComponent
+    +actualizar_decoradores(carro: CarroComponent): CarroComponent
+    +limpiar(): CarroComponent
+}
+
+' ========== OTROS MODELOS ==========
+
+class Roca {
+    +image: Surface
+    +rect: Rect
+    +velocidad: int
+    +Roca(x: int, y: int, velocidad: int)
+    +update(): void
+    +draw(screen): void
+    +esta_fuera_pantalla(alto: int): bool
+}
+
+' ========== RELACIONES ==========
+
+' Herencia múltiple de CarroJugador
+CarroJugador --|> Carro : hereda
+
+' Patrón Decorator
+CarroDecorator o-- CarroComponent : envuelve
+VelocidadDecorator --> CarroComponent : decora
+LentitudDecorator --> CarroComponent : decora
+InmunidadDecorator --> CarroComponent : decora
+
+' Gestor de pociones
+GestorPociones ..> VelocidadDecorator : crea
+GestorPociones ..> LentitudDecorator : crea
+GestorPociones ..> InmunidadDecorator : crea
+GestorPociones o-- CarroComponent : gestiona
+
+' Poción visual en el juego
+PocionItem ..> PocionesInterface : representa
+
+note right of CarroDecorator
+  Patrón Wrapper/Decorator:
+  Envuelve un CarroComponent y
+  añade funcionalidad extra
+  manteniendo la interfaz
+end note
+
+note right of GestorPociones
+  Controlador que gestiona
+  la aplicación y remoción
+  de decoradores de pociones
+end note
+
+note left of CarroJugador
+  Componente concreto que
+  implementa CarroComponent
+  y hereda de Carro para
+  tener velocidad e inmunidad
+end note
 
 @enduml

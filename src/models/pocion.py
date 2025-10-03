@@ -1,6 +1,5 @@
 import pygame
 from abc import abstractmethod, ABC
-from carro import Carro
 
 class PocionesInterface(ABC):
     def __init__(self, nombre: str, descripcion: str, duracion: int):
@@ -11,7 +10,7 @@ class PocionesInterface(ABC):
         super().__init__()
 
     @abstractmethod
-    def operar(self, carro: Carro):
+    def operar(self, carro):
         ...
 
     def ha_expirado(self):
