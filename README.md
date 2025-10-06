@@ -1,4 +1,4 @@
-#andres felipe lopez martinez - 20241020052 #juan camilo mosquera plaomino - 20241020120
+#andres felipe lopez martinez - 20241020052 #juan camilo mosquera palomino - 20241020120
 # F1Game
 
 Proyecto desarrollado en Python para ejecución en ambiente local.
