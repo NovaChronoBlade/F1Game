@@ -1,6 +1,7 @@
 import pygame
 import random
 from config import ANCHO, ALTO, FPS, TITULO, COLOR_FONDO, ICON
+from src.Controles import MouseAdapter, TecladoAdapterFlechas, TecladoAdapterWASD, ControladorCompuesto
 from src.models.carro import CarroJugador
 from src.models.roca import Roca
 from src.models.pocion_item import PocionItem
@@ -57,6 +58,18 @@ class Game:
         self.game_over = False
         self.return_to_menu = False
 
+        #Adaptadores 
+        self.mouse_control = MouseAdapter()
+        self.teclado_wasd = TecladoAdapterWASD()
+        self.teclado_flechas = TecladoAdapterFlechas()
+
+        # Control combinado (puedes agregar o quitar adaptadores)
+        self.control = ControladorCompuesto([
+            self.mouse_control,
+            self.teclado_wasd,
+            self.teclado_flechas
+        ])
+
     def run(self):
         while self.running:
             self.clock.tick(FPS)
@@ -84,11 +97,11 @@ class Game:
         
         # Manejar el movimiento del carro con las teclas solo si no hay game over
         if not self.game_over:
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            if self.control.mover_izquierda():
                 self.player_car.mover_izquierda(limite_izquierdo=self.limite_izquierdo)
-            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            if self.control.mover_derecha():
                 self.player_car.mover_derecha(limite_derecho=self.limite_derecho)
+
 
     def update(self):
         # Desplazar la pista hacia abajo
